@@ -1,6 +1,8 @@
 package viamatica.prueba.module.person.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import java.time.LocalDate;
 
@@ -30,7 +32,7 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long idPersona;
-    
+
     @Column(nullable = false, length = 255)
     private String nombres;
 
@@ -43,12 +45,13 @@ public class Person {
     private String identificacion;
 
     @Column(columnDefinition = "DATE")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    
+
     @OneToOne(fetch = FetchType.EAGER, cascade = {
-        CascadeType.MERGE, CascadeType.PERSIST})
+            CascadeType.MERGE, CascadeType.PERSIST })
     private User user;
 
+    @JsonIgnore
     private boolean deleted = Boolean.FALSE;
 }

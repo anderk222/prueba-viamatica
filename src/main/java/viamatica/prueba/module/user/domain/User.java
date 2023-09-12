@@ -17,16 +17,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import viamatica.prueba.module.session.domain.Session;
 import viamatica.prueba.module.role.domain.Role;
-
 
 @Data
 @Entity
@@ -35,46 +31,35 @@ import viamatica.prueba.module.role.domain.Role;
 @Where(clause = "deleted=false")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long idUsuario;
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE)
+        private Long idUsuario;
 
-    @Column(nullable = false)
-  
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]*$", 
-            message = "incorrect username your username should sees like Anderk222")
-    @Length(min = 8, max = 20)
-    private String userName;
-    
-    @Column(nullable=false)
-    @Email
-    private String mail;
-    
-    @Lob
-    @Column(columnDefinition = "text")
-    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
-    private String password;
+        @Column(nullable = false)
 
-    private boolean sessionActive = Boolean.FALSE;
+        @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]*$", message = "incorrect username your username should sees like Anderk222")
+        @Length(min = 8, max = 20)
+        private String userName;
 
-    private int logueosIncorrectos = 0;
+        @Column(nullable = false)
+        @Email
+        private String mail;
 
-    private boolean deleted = Boolean.FALSE;
+        @Lob
+        @Column(columnDefinition = "text", nullable = false)
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        private String password;
 
-    
-       @ManyToMany()
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+        private boolean sessionActive = Boolean.FALSE;
 
-    @JsonIgnore
-    private Set<Role> roles;
-    
+        private int logueosIncorrectos = 0;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    @PrimaryKeyJoinColumn
-    private Session session;
-    
+        @JsonIgnore
+        private boolean deleted = Boolean.FALSE;
+
+        @ManyToMany()
+        @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        private Set<Role> roles;
+
 }

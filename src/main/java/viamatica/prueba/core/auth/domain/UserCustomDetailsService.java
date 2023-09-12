@@ -1,6 +1,7 @@
-package viamatica.prueba.core.auth;
+package viamatica.prueba.core.auth.domain;
 
 
+import viamatica.prueba.core.auth.UserCustomDetails;
 import viamatica.prueba.module.user.UserRepository;
 import viamatica.prueba.module.user.domain.User;
 

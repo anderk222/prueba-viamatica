@@ -1,6 +1,5 @@
 package viamatica.prueba.core.auth;
 
-
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
@@ -11,16 +10,16 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import viamatica.prueba.core.auth.domain.UserCustomDetailsService;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -33,10 +32,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Value("${jwt.public.key}")
-	RSAPublicKey key;
+    RSAPublicKey key;
 
-	@Value("${jwt.private.key}")
-	RSAPrivateKey priv;
+    @Value("${jwt.private.key}")
+    RSAPrivateKey priv;
 
     @Bean
     // authentication
@@ -46,28 +45,34 @@ public class SecurityConfig {
     }
 
     @Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		// @formatter:off
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // @formatter:off
 		http
+        .cors((cors)->cors.disable())                
+        .csrf((csrf) -> csrf.disable())
+                .authorizeHttpRequests((authorize) -> authorize
+						.requestMatchers("/auth/**")
+                        .permitAll()
+				)
 				.authorizeHttpRequests((authorize) -> authorize
 						.anyRequest().authenticated()
 				)
-				.csrf((csrf) -> csrf.ignoringRequestMatchers("/token"))
-				.httpBasic(Customizer.withDefaults())
-				.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+				.httpBasic(withDefaults())
+				.oauth2ResourceServer((resource)->resource.jwt(withDefaults()))
 				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.exceptionHandling((exceptions) -> exceptions
 						.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
 						.accessDeniedHandler(new BearerTokenAccessDeniedHandler())
 				);
 		// @formatter:on
-		return http.build();
-	}
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return http.build();
     }
 
+	
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
     @Bean
     JwtDecoder jwtDecoder() {
