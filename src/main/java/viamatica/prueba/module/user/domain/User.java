@@ -15,51 +15,64 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import viamatica.prueba.exception.AuthAttempsExceededException;
 import viamatica.prueba.module.role.domain.Role;
 
 @Data
 @Entity
 @Table(name = "usuarios")
 @SQLDelete(sql = "UPDATE usuarios SET deleted = true WHERE id_usuario=?")
-@Where(clause = "deleted=false")
+@Where(clause = "deleted=false")  
 public class User {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.SEQUENCE)
-        private Long idUsuario;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long idUsuario;
 
-        @Column(nullable = false)
+    @Column(nullable = false,unique = true)
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]*$", message = "incorrect username your username should sees like Anderk222")
+    @Length(min = 8, max = 20)
+    private String userName;
 
-        @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]*$", message = "incorrect username your username should sees like Anderk222")
-        @Length(min = 8, max = 20)
-        private String userName;
+    @Column(nullable = false, unique = true)
+    @Email
+    private String mail;
 
-        @Column(nullable = false)
-        @Email
-        private String mail;
+    @Column(columnDefinition = "text", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 8)
+    private String password;
 
-        @Lob
-        @Column(columnDefinition = "text", nullable = false)
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        private String password;
+    private boolean sessionActive = Boolean.FALSE;
 
-        private boolean sessionActive = Boolean.FALSE;
+    private int logueosIncorrectos = 0;
 
-        private int logueosIncorrectos = 0;
+    @JsonIgnore
+    private boolean deleted = Boolean.FALSE;
 
-        @JsonIgnore
-        private boolean deleted = Boolean.FALSE;
+    @ManyToMany()
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Set<Role> roles;
 
-        @ManyToMany()
-        @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        private Set<Role> roles;
+    public void sumlogueosIncorrectos() {
 
+        logueosIncorrectos++;
+
+    }
+
+        public void verifyFailedAuth() {
+
+        if (this.logueosIncorrectos > 3)
+            throw new AuthAttempsExceededException();
+
+    }
+    
 }

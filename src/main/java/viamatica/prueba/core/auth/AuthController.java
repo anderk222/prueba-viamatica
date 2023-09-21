@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.transaction.Transactional;
 import viamatica.prueba.core.auth.domain.Authentication;
+import viamatica.prueba.domain.Response;
+import viamatica.prueba.domain.ResponseToken;
 import viamatica.prueba.module.person.domain.Person;
 
 @RestController
@@ -22,22 +23,17 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/singin")
-    @Transactional
-    public String authenticate(@RequestBody Authentication auth) {
+    public ResponseToken authenticate(@RequestBody Authentication authentication) {
 
-        return authService.authenticate(auth);
+        return authService.authenticate(authentication);
     }
 
     @PostMapping("/singup")
-    public ResponseEntity<String> User(@RequestBody Person user) {
+    public ResponseEntity<Response> User(@RequestBody Person user) {
 
-        authService.singup(user);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED).body("Usuario registrado");
-
+                .status(HttpStatus.CREATED).body(authService.singup(user));
     }
-
-
 
 }

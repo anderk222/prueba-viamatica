@@ -54,4 +54,12 @@ public class Person {
 
     @JsonIgnore
     private boolean deleted = Boolean.FALSE;
+    
+    
+    public String getFullName() {
+
+        return this.nombres + " " + this.getApellidos();
+
+    }
+
 }

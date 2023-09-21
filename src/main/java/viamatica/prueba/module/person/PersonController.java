@@ -44,13 +44,6 @@ public class PersonController {
     @PostMapping()
     public ResponseEntity<Person> save(@RequestBody Person person) {
 
-        String mail_user = person.getNombres().toLowerCase()
-                .charAt(0) + person.getApellidos().split(" ")[0].toLowerCase();
-        
-        String email = mail_user + "@mail.com";
-        
-        person.getUser().setMail(email);
-        
         Person saved = personService.save(person);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
