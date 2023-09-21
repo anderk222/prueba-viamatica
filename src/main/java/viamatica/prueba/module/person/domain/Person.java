@@ -30,7 +30,7 @@ import viamatica.prueba.module.user.domain.User;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPersona;
 
     @Column(nullable = false, length = 255)

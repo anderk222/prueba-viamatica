@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import viamatica.prueba.domain.Pagination;
 import viamatica.prueba.exception.ResourceNotFoundException;
 import viamatica.prueba.module.role.domain.Role;
@@ -57,6 +58,7 @@ public class RoleService {
 
     }
 
+    @Transactional
     public Role addRoleToUser(long roleid, long userid) {
 
         Role role = this.find(userid);

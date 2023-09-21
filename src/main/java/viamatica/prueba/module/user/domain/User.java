@@ -3,6 +3,7 @@ package viamatica.prueba.module.user.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.SQLDelete;
@@ -33,7 +34,7 @@ import viamatica.prueba.module.role.domain.Role;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
 
     @Column(nullable = false,unique = true)
@@ -57,10 +58,9 @@ public class User {
     @JsonIgnore
     private boolean deleted = Boolean.FALSE;
 
-    @ManyToMany()
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @ManyToMany(mappedBy = "users")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public void sumlogueosIncorrectos() {
 
@@ -74,5 +74,6 @@ public class User {
             throw new AuthAttempsExceededException();
 
     }
-    
+
+
 }

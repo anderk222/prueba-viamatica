@@ -1,5 +1,6 @@
 package viamatica.prueba.module.role.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,24 +25,27 @@ import viamatica.prueba.module.user.domain.User;
 public class Role {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idRol;
     
     @Column(length = 50, nullable = false)
     private String rolName;
     
     @ManyToMany()
-    @JoinTable(name = "role_options",
+    @JoinTable(name = "role_role_options",
             joinColumns = @JoinColumn(name = "rol_id"),
-            inverseJoinColumns = @JoinColumn(name = "rol_optiones_id")
+            inverseJoinColumns = @JoinColumn(name = "rol_options_id")
     )
     private Set<RolOptions> rolOptions = new HashSet<>();
     
-    @ManyToMany(mappedBy = "roles")
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_rol"), inverseJoinColumns = @JoinColumn(name = "id_user"))
+    @ManyToMany()
     Set<User> users = new HashSet<>();
 
-    public void addUser(User user){
+    public void addUser(User user){ 
+        
         users.add(user);
+
     }
 
 }

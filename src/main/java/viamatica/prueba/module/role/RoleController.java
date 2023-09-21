@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import viamatica.prueba.domain.Pagination;
 import viamatica.prueba.module.role.domain.Role;
 
 @RequestMapping("/api/role")
 @CrossOrigin("*")
+@RestController
 public class RoleController {
 
     @Autowired
@@ -38,6 +40,13 @@ public class RoleController {
     public Role addRoleToUser(@PathVariable long roleId,@PathVariable long userId) {
 
         return service.addRoleToUser(userId, userId);
+    }
+
+     @GetMapping("/{id}")
+    public Role find(@PathVariable long id) {
+
+        return service.find(id);
+
     }
 
     @DeleteMapping("/{id}")
