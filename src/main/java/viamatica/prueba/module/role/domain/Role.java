@@ -28,6 +28,7 @@ public class Role {
     @Column(length = 50, nullable = false)
     private String rolName;
 
+    @ManyToMany()
     @JoinTable(name = "role_role_options",
             joinColumns = @JoinColumn(name = "rol_id", referencedColumnName = "idRol"),
             inverseJoinColumns = @JoinColumn(name = "rol_options_id", referencedColumnName = "idOpcion")
