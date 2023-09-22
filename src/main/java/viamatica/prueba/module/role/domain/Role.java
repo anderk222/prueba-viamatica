@@ -30,16 +30,18 @@ public class Role {
     @Column(length = 50, nullable = false)
     private String rolName;
     
-    @ManyToMany()
-    @JoinTable(name = "role_role_options",
-            joinColumns = @JoinColumn(name = "rol_id"),
-            inverseJoinColumns = @JoinColumn(name = "rol_options_id")
+ @JoinTable(name = "role_role_options",
+            joinColumns = @JoinColumn(name = "rol_id", referencedColumnName = "idRol"),
+            inverseJoinColumns = @JoinColumn(name = "rol_options_id",referencedColumnName = "idOpcion")
     )
     private Set<RolOptions> rolOptions = new HashSet<>();
     
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_rol"), inverseJoinColumns = @JoinColumn(name = "id_user"))
     @ManyToMany()
+    @JoinTable(name = "user_role", 
+            joinColumns = @JoinColumn(name = "id_rol", referencedColumnName = "idRol"), 
+            inverseJoinColumns = @JoinColumn(name = "id_user",referencedColumnName = "idUsuario"))
     Set<User> users = new HashSet<>();
+
 
     public void addUser(User user){ 
         
