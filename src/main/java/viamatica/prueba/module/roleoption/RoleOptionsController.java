@@ -1,6 +1,7 @@
 package viamatica.prueba.module.roleoption;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class RoleOptionsController {
     }
 
     @GetMapping
+   // @PreAuthorize("hasAuthorithy('ROLE_ADMIN')")
     public Pagination<RolOptions> findAlll(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size) {

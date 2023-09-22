@@ -24,8 +24,7 @@ public class RolOptions {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_opcion")
-    private long id;
+    private long idOpcion;
     
     
     @Column(length = 50, nullable = false)
