@@ -27,4 +27,4 @@ Documentacion **POSTMAN**
 
 ### Observaciones
 Los CRUD de roles y opciones roles no funionan, al momento de hacer las relaciones ManyToMany, las relaciones no estan siendo guardadas en la base de datos,
-para mi vista las entidades con estas relaciones estan bien mapeadas, llego la cegera 🥲.
+para mi vista, las entidades con estas relaciones estan bien mapeadas, llego la cegera 🥲.
