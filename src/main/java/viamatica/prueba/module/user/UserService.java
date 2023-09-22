@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,10 @@ import viamatica.prueba.module.user.domain.User;
 
 @Service
 public class UserService {
+    
+    
+    @Autowired
+    private BCryptPasswordEncoder encoder;
     
     @Autowired
     private UserRepository userRepository;
@@ -35,6 +40,10 @@ public class UserService {
     }
 
     public User update(User user){
+        
+        String encode = encoder.encode(user.getPassword());
+        
+        user.setPassword(encode);
         
         return userRepository.save(user);
 

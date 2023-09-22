@@ -24,9 +24,8 @@ public class PersonService {
     @Autowired
     UserService userService;
 
-    @Autowired 
+    @Autowired
     private BCryptPasswordEncoder encoder;
-    
 
     // Traer personas con paginacion
     public Pagination<Person> findAll(int page, int size) {
@@ -61,26 +60,22 @@ public class PersonService {
 
         String email = generator.generate(person.getFullName());
         String initital = email.split("@")[0];
-        
+
         Sort sort = Sort.by(Sort.Direction.DESC, "idUsuario");
-        
+
         List<User> users = userService.findByMail(initital, sort);
 
         String encode = encoder.encode(person.getUser().getPassword());
-        
+
         person.getUser().setPassword(encode);
 
-        if(users.isEmpty() == false){
-        
-            email = generator.generateFromEmail(users.get(0).getMail());
-            
-        }
-        
-        
-        
-        person.getUser().setMail(email);
+        if (users.isEmpty() == false) {
 
-        
+            email = generator.generateFromEmail(users.get(0).getMail());
+
+        }
+
+        person.getUser().setMail(email);
 
         return personRepository.save(person);
 
@@ -92,6 +87,10 @@ public class PersonService {
         Person updated = personRepository.findById(id).map((_person) -> {
 
             person.setIdPersona(id);
+
+            String encode = encoder.encode(person.getUser().getPassword());
+
+            person.getUser().setPassword(encode);
 
             return personRepository.save(person);
         })
